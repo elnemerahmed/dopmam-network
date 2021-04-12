@@ -9,7 +9,7 @@ rm -fr ./channel-artifacts/*
 rm -fr ./anchor-artifacts/*
 
 # Stop running Docker containers
-docker-compose -f ./docker/docker-compose-ca.yaml down
+docker-compose -f ./docker/docker-compose-ca.yaml -f ./docker/docker-compose-dopmam-network.yaml down --volumes --remove-orphans
 
 # Install and start Docker containers
 docker-compose -f ./docker/docker-compose-ca.yaml up -d
@@ -183,3 +183,47 @@ mkdir -p organizations/ordererOrganizations/moh.ps/users/Admin@moh.ps
 fabric-ca-client enroll -u https://ordererAdmin:ordererAdminpw@localhost:9054 --caname ca-orderer -M ${PWD}/organizations/ordererOrganizations/moh.ps/users/Admin@moh.ps/msp --tls.certfiles ${PWD}/organizations/fabric-ca/ordererOrg/tls-cert.pem
 
 cp ${PWD}/organizations/ordererOrganizations/moh.ps/msp/config.yaml ${PWD}/organizations/ordererOrganizations/moh.ps/users/Admin@moh.ps/msp/config.yaml
+
+export FABRIC_CFG_PATH=${PWD}/configtx
+
+# Create Genisis Block
+configtxgen -profile OrdererGenesis -channelID system-channel -outputBlock ./system-genesis-block/genesis.block
+
+# Install and start Docker containers
+docker-compose -f ./docker/docker-compose-dopmam-network.yaml up -d
+
+sleep 5
+
+# Create Channel Artifacts
+configtxgen -profile DopmamShifaChannel -outputCreateChannelTx ./channel-artifacts/dopmam-shifa.tx -channelID dopmam-shifa
+
+# Create anchors
+# configtxgen -profile DopmamShifaChannel -outputAnchorPeersUpdate ./channel-artifacts/dopmamanchors.tx -channelID dopmam-shifa -asOrg DopmamMSP
+# configtxgen -profile DopmamShifaChannel -outputAnchorPeersUpdate ./channel-artifacts/shifaanchors.tx -channelID dopmam-shifa -asOrg ShifaMSP
+		
+# Create Channel Block
+export CORE_PEER_TLS_ENABLED=true
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem
+export CORE_PEER_LOCALMSPID="DopmamMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/dopmam.moh.ps/peers/peer0.dopmam.moh.ps/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/dopmam.moh.ps/users/Admin@dopmam.moh.ps/msp
+export CORE_PEER_ADDRESS=localhost:7051
+export FABRIC_CFG_PATH=${PWD}/config
+peer channel create -o localhost:7050 -c dopmam-shifa --ordererTLSHostnameOverride orderer.moh.ps -f ./channel-artifacts/dopmam-shifa.tx --outputBlock ./channel-artifacts/dopmam-shifa.block --tls --cafile ${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem
+
+# Join Channel From peer 0 Dopmam Org
+peer channel join -b ./channel-artifacts/dopmam-shifa.block
+
+# Join Channel From peer 0 Shifa Org
+export CORE_PEER_TLS_ENABLED=true
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem
+export CORE_PEER_LOCALMSPID="ShifaMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/shifa.moh.ps/peers/peer0.shifa.moh.ps/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/shifa.moh.ps/users/Admin@shifa.moh.ps/msp
+export CORE_PEER_ADDRESS=localhost:9051
+export FABRIC_CFG_PATH=${PWD}/config
+peer channel join -b ./channel-artifacts/dopmam-shifa.block
+
+# return the config export to configtx
+export FABRIC_CFG_PATH=${PWD}/configtx
+
