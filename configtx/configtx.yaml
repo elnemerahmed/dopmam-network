@@ -1,6 +1,6 @@
 Organizations:
-    - &OrdererOrg
-        Name: OrdererOrg
+    - &Orderer
+        Name: Orderer
         ID: OrdererMSP
         MSPDir: ../organizations/ordererOrganizations/moh.ps/msp
         Policies:
@@ -131,7 +131,7 @@ Profiles:
         Orderer:
             <<: *OrdererDefaults
             Organizations:
-                - *OrdererOrg
+                - *Orderer
             Capabilities:
                 <<: *OrdererCapabilities
         Consortiums:
