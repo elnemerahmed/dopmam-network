@@ -17,6 +17,7 @@ source .env
 
 export org_name_with_domain=${org_name}.${DOMAIN}
 export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/ordererOrganizations/${DOMAIN}
+export FABRIC_CA_CLIENT_TLS_CERTFILES=${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem
 
 # Crete directory structure
 mkdir -p "${PWD}/organizations/fabric-ca/${org_name}"
@@ -39,7 +40,7 @@ while : ; do
   fi
 done
 
-fabric-ca-client enroll -u https://admin:adminpw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client enroll -u https://admin:adminpw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} 2>&1 > /dev/null
 
 echo "NodeOUs:
   Enable: true
@@ -56,15 +57,15 @@ echo "NodeOUs:
     Certificate: cacerts/${org_ca_address}-${org_ca_port}-${org_ca_name}.pem
     OrganizationalUnitIdentifier: orderer" > "${PWD}/organizations/ordererOrganizations/${DOMAIN}/msp/config.yaml"
 
-fabric-ca-client register --caname ${org_ca_name} --id.name orderer --id.secret ordererpw --id.type orderer --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client register --caname ${org_ca_name} --id.name orderer --id.secret ordererpw --id.type orderer 2>&1 > /dev/null
 
-fabric-ca-client register --caname ${org_ca_name} --id.name ${org_name}admin --id.secret ${org_name}adminpw --id.type admin --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client register --caname ${org_ca_name} --id.name ${org_name}admin --id.secret ${org_name}adminpw --id.type admin 2>&1 > /dev/null
 
-fabric-ca-client enroll -u https://orderer:ordererpw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/ordererOrganizations/${DOMAIN}/orderers/${org_name_with_domain}/msp" --csr.hosts ${org_name_with_domain} --csr.hosts ${org_ca_address} --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client enroll -u https://orderer:ordererpw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/ordererOrganizations/${DOMAIN}/orderers/${org_name_with_domain}/msp" --csr.hosts ${org_name_with_domain} --csr.hosts ${org_ca_address} 2>&1 > /dev/null
 
 cp "${PWD}/organizations/ordererOrganizations/${DOMAIN}/msp/config.yaml" "${PWD}/organizations/ordererOrganizations/${DOMAIN}/orderers/${org_name_with_domain}/msp/config.yaml"
 
-fabric-ca-client enroll -u https://orderer:ordererpw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/ordererOrganizations/${DOMAIN}/orderers/${org_name_with_domain}/tls" --enrollment.profile tls --csr.hosts ${org_name_with_domain} --csr.hosts ${org_ca_address} --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client enroll -u https://orderer:ordererpw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/ordererOrganizations/${DOMAIN}/orderers/${org_name_with_domain}/tls" --enrollment.profile tls --csr.hosts ${org_name_with_domain} --csr.hosts ${org_ca_address} 2>&1 > /dev/null
 
 cp "${PWD}/organizations/ordererOrganizations/${DOMAIN}/orderers/${org_name_with_domain}/tls/tlscacerts"/* "${PWD}/organizations/ordererOrganizations/${DOMAIN}/orderers/${org_name_with_domain}/tls/ca.crt"
 cp "${PWD}/organizations/ordererOrganizations/${DOMAIN}/orderers/${org_name_with_domain}/tls/signcerts"/* "${PWD}/organizations/ordererOrganizations/${DOMAIN}/orderers/${org_name_with_domain}/tls/server.crt"
@@ -72,7 +73,7 @@ cp "${PWD}/organizations/ordererOrganizations/${DOMAIN}/orderers/${org_name_with
 cp "${PWD}/organizations/ordererOrganizations/${DOMAIN}/orderers/${org_name_with_domain}/tls/tlscacerts"/* "${PWD}/organizations/ordererOrganizations/${DOMAIN}/orderers/${org_name_with_domain}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"
 cp "${PWD}/organizations/ordererOrganizations/${DOMAIN}/orderers/${org_name_with_domain}/tls/tlscacerts"/* "${PWD}/organizations/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"
 
-fabric-ca-client enroll -u https://${org_name}admin:${org_name}adminpw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/ordererOrganizations/${DOMAIN}/users/Admin@${DOMAIN}/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client enroll -u https://${org_name}admin:${org_name}adminpw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/ordererOrganizations/${DOMAIN}/users/Admin@${DOMAIN}/msp" 2>&1 > /dev/null
 
 cp "${PWD}/organizations/ordererOrganizations/${DOMAIN}/msp/config.yaml" "${PWD}/organizations/ordererOrganizations/${DOMAIN}/users/Admin@${DOMAIN}/msp/config.yaml"
 
