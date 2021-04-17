@@ -1,44 +1,58 @@
 #!/bin/bash
 
+echo "$(tput setaf 3) _____   ____  _____  __  __          __  __ "
+echo "|  __ \ / __ \|  __ \|  \/  |   /\   |  \/  |"
+echo "| |  | | |  | | |__) | \  / |  /  \  | \  / |"
+echo "| |  | | |  | |  ___/| |\/| | / /\ \ | |\/| |"
+echo "| |__| | |__| | |    | |  | |/ ____ \| |  | |"
+echo "|_____/ \____/|_|    |_|  |_/_/    \_\_|  |_|"
+echo ""
+echo "$(tput setaf 7)Authors: "
+echo "  - Ahmed El Nemer: aelnemer1@smail.ucas.edu.ps"
+echo "  - Waleed Mortaja: wmortaja1@smail.ucas.edu.ps"
+echo "  - Ahmed Afifi:    aafifi4@smail.ucas.edu.ps$(tput sgr0)"
+echo ""
+echo ""
+
 source .env
 
-# Stop running Docker containers
-docker-compose -f "${PWD}/docker/docker-compose-ca.yaml" -f "${PWD}/docker/docker-compose-dopmam-network.yaml" down --volumes --remove-orphans
+log "Stoping running Docker containers"
+docker-compose -f "${PWD}/docker/docker-compose-ca.yaml" -f "${PWD}/docker/docker-compose-dopmam-network.yaml" down --volumes --remove-orphans 2>&1 > /dev/null
 
-# Remove previous generated artifacts
-rm -fr "${PWD}/channel-artifacts"
-rm -fr "${PWD}/organizations"
-rm -fr "${PWD}/system-genesis-block"
+log "Removing previous generated artifacts"
+rm -fr "${PWD}/channel-artifacts" 2>&1 > /dev/null
+rm -fr "${PWD}/organizations" 2>&1 > /dev/null
+rm -fr "${PWD}/system-genesis-block" 2>&1 > /dev/null
 
-# Crete directory structure
-mkdir -p "${PWD}/channel-artifacts"
-mkdir -p "${PWD}/organizations"
-mkdir -p "${PWD}/system-genesis-block"
+log "Creating directory structure"
+mkdir -p "${PWD}/channel-artifacts" 2>&1 > /dev/null
+mkdir -p "${PWD}/organizations" 2>&1 > /dev/null
+mkdir -p "${PWD}/system-genesis-block" 2>&1 > /dev/null
 
-# Install and start Docker containers
-docker-compose -f "${PWD}/docker/docker-compose-ca.yaml" up -d
+log "Installing and starting Docker Certificate Authority containers"
+docker-compose -f "${PWD}/docker/docker-compose-ca.yaml" up -d 2>&1 > /dev/null
 
-# Create DOPMAM
-./createOrg.sh dopmam localhost 7054 ca-dopmam
+log "Creating DOPMAM Organization"
+./createOrg.sh dopmam localhost 7054 ca-dopmam 2>&1 > /dev/null
 
-# Create Shifa
-./createOrg.sh shifa localhost 8054 ca-shifa
+log "Creating Shifa Organization"
+./createOrg.sh shifa localhost 8054 ca-shifa 2>&1 > /dev/null
 
-# Create Orderer 
-./createOrderer.sh orderer localhost 9054 ca-orderer
+log "Creating Orderer Organization"
+./createOrderer.sh orderer localhost 9054 ca-orderer 2>&1 > /dev/null
 
 export FABRIC_CFG_PATH=${PWD}/configtx
 
-# Create Genisis Block
-configtxgen -profile OrdererGenesis -channelID system-channel -outputBlock "${PWD}/system-genesis-block/genesis.block"
+log "Creating Genisis Block"
+configtxgen -profile OrdererGenesis -channelID system-channel -outputBlock "${PWD}/system-genesis-block/genesis.block" 2>&1 > /dev/null
 
-# Install and start Docker containers
-docker-compose -f "${PWD}/docker/docker-compose-dopmam-network.yaml" up -d
+log "Installing and starting Docker Network containers (Peers & Organizations)"
+docker-compose -f "${PWD}/docker/docker-compose-dopmam-network.yaml" up -d 2>&1 > /dev/null
 
-# Create Channel Artifacts
-configtxgen -profile DopmamShifaChannel -outputCreateChannelTx "${PWD}/channel-artifacts/dopmam-shifa.tx" -channelID dopmam-shifa
+log "Creating Channel Artifacts (dopmam-shifa)"
+configtxgen -profile DopmamShifaChannel -outputCreateChannelTx "${PWD}/channel-artifacts/dopmam-shifa.tx" -channelID dopmam-shifa 2>&1 > /dev/null
 
-# Create Channel Block
+log "Creating Channel Block (dopmam-shifa)"
 export CORE_PEER_TLS_ENABLED=true
 export ORDERER_CA=${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem
 export CORE_PEER_LOCALMSPID="DopmamMSP"
@@ -47,29 +61,26 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/dopmam.moh
 export CORE_PEER_ADDRESS=localhost:7051
 export FABRIC_CFG_PATH=${PWD}/config
 
-# Poll in case the raft leader is not set yet
 RETRY_COUNT=0
 rc=1
 while [ $rc -ne 0 -a $RETRY_COUNT -lt 10 ] ; do
   sleep 1
-  peer channel create -o localhost:7050 -c dopmam-shifa --ordererTLSHostnameOverride orderer.moh.ps -f "${PWD}/channel-artifacts/dopmam-shifa.tx" --outputBlock "${PWD}/channel-artifacts/dopmam-shifa.block" --tls --cafile "${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem"
+  peer channel create -o localhost:7050 -c dopmam-shifa --ordererTLSHostnameOverride orderer.moh.ps -f "${PWD}/channel-artifacts/dopmam-shifa.tx" --outputBlock "${PWD}/channel-artifacts/dopmam-shifa.block" --tls --cafile "${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem" 2>&1 > /dev/null
   rc=$?
   RETRY_COUNT=$(expr $RETRY_COUNT + 1)
 done
 
-# Join Channel From peer 0 Dopmam Org
-# Sometimes Join takes time, hence retry
+log "Joining dopmam-shifa Channel from peer0.dopmam.moh.ps"
 RETRY_COUNT=0
 rc=1
 while [ $rc -ne 0 -a $RETRY_COUNT -lt 10 ] ; do
   sleep 1
-  peer channel join -b "${PWD}/channel-artifacts/dopmam-shifa.block"
+  peer channel join -b "${PWD}/channel-artifacts/dopmam-shifa.block" 2>&1 > /dev/null
   rc=$?
   RETRY_COUNT=$(expr $RETRY_COUNT + 1)
 done
 
-
-# Join Channel From peer 0 Shifa Org
+log "Joining dopmam-shifa Channel from peer0.shifa.moh.ps"
 export CORE_PEER_TLS_ENABLED=true
 export ORDERER_CA=${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem
 export CORE_PEER_LOCALMSPID="ShifaMSP"
@@ -78,16 +89,14 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/shifa.moh.
 export CORE_PEER_ADDRESS=localhost:9051
 export FABRIC_CFG_PATH=${PWD}/config
 
-# Sometimes Join takes time, hence retry
 RETRY_COUNT=0
 rc=1
 while [ $rc -ne 0 -a $RETRY_COUNT -lt 10 ] ; do
   sleep 1
-  peer channel join -b "${PWD}/channel-artifacts/dopmam-shifa.block"
+  peer channel join -b "${PWD}/channel-artifacts/dopmam-shifa.block" 2>&1 > /dev/null
   rc=$?
   RETRY_COUNT=$(expr $RETRY_COUNT + 1)
 done
-
 
 # return the config export to configtx
 export FABRIC_CFG_PATH=${PWD}/configtx
