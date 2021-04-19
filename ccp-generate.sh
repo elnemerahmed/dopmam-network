@@ -13,7 +13,7 @@ function json_ccp {
         -e "s/\${CAPORT}/${4}/" \
         -e "s#\${PEERPEM}#${PP}#" \
         -e "s#\${CAPEM}#${CP}#" \
-        ccp/ccp-template.json
+        template/ccp-template.json
 }
 
 function org_ccp {
@@ -24,7 +24,7 @@ function org_ccp {
     PEERPEM=organizations/peerOrganizations/${1}.moh.ps/tlsca/tlsca.${1}.moh.ps-cert.pem
     CAPEM=organizations/peerOrganizations/${1}.moh.ps/ca/ca.${1}.moh.ps-cert.pem
 
-    echo "$(json_ccp ${ORG_S} ${ORG_C} ${P0PORT} ${CAPORT} ${PEERPEM} ${CAPEM})" > ./${PWD}/ccp/connection-${1}.json
+    echo "$(json_ccp ${ORG_S} ${ORG_C} ${P0PORT} ${CAPORT} ${PEERPEM} ${CAPEM})" > ./ccp/connection-${1}.json
 }
 
 org_ccp dopmam Dopmam 7051 7054

@@ -1,0 +1,49 @@
+{
+    "name": "dopmam-network-${ORG_S}",
+    "version": "1.0.0",
+    "client": {
+        "organization": "${ORG_C}",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                }
+            }
+        }
+    },
+    "organizations": {
+        "${ORG_C}": {
+            "mspid": "${ORG_C}MSP",
+            "peers": [
+                "peer0.${ORG_S}.moh.ps"
+            ],
+            "certificateAuthorities": [
+                "ca.${ORG_S}.moh.ps"
+            ]
+        }
+    },
+    "peers": {
+        "peer0.${ORG_S}.moh.ps": {
+            "url": "grpcs://localhost:${P0PORT}",
+            "tlsCACerts": {
+                "pem": "${PEERPEM}"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.${ORG_S}.moh.ps",
+                "hostnameOverride": "peer0.${ORG_S}.moh.ps"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.${ORG_S}.moh.ps": {
+            "url": "https://localhost:${CAPORT}",
+            "caName": "ca-${ORG_S}",
+            "tlsCACerts": {
+                "pem": ["${CAPEM}"]
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}

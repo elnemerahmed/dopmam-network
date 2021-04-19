@@ -25,58 +25,6 @@ rm -fr "${PWD}/organizations" 2>&1 > /dev/null
 rm -fr "${PWD}/ccp" 2>&1 > /dev/null
 rm -fr "${PWD}/system-genesis-block" 2>&1 > /dev/null
 
-echo '
-{
-    "name": "dopmam-network-${ORG_S}",
-    "version": "1.0.0",
-    "client": {
-        "organization": "${ORG_C}",
-        "connection": {
-            "timeout": {
-                "peer": {
-                    "endorser": "300"
-                }
-            }
-        }
-    },
-    "organizations": {
-        "${ORG_C}": {
-            "mspid": "${ORG_C}MSP",
-            "peers": [
-                "peer0.${ORG_S}.moh.ps"
-            ],
-            "certificateAuthorities": [
-                "ca.${ORG_S}.moh.ps"
-            ]
-        }
-    },
-    "peers": {
-        "peer0.${ORG_S}.moh.ps": {
-            "url": "grpcs://localhost:${P0PORT}",
-            "tlsCACerts": {
-                "pem": "${PEERPEM}"
-            },
-            "grpcOptions": {
-                "ssl-target-name-override": "peer0.${ORG_S}.moh.ps",
-                "hostnameOverride": "peer0.${ORG_S}.moh.ps"
-            }
-        }
-    },
-    "certificateAuthorities": {
-        "ca.${ORG_S}.moh.ps": {
-            "url": "https://localhost:${CAPORT}",
-            "caName": "ca-${ORG_S}",
-            "tlsCACerts": {
-                "pem": ["${CAPEM}"]
-            },
-            "httpOptions": {
-                "verify": false
-            }
-        }
-    }
-}
-' >> ${PWD}/ccp/ccp-template.json
-
 log "Creating directory structure"
 mkdir -p "${PWD}/channel-artifacts" 2>&1 > /dev/null
 mkdir -p "${PWD}/organizations" 2>&1 > /dev/null
@@ -201,4 +149,4 @@ done
 export FABRIC_CFG_PATH=${PWD}/configtx
 
 log "Generating connection profiles for peers"
-./ccp-generate.sh
+sudo ./ccp-generate.sh
