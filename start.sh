@@ -109,6 +109,9 @@ docker-compose -f "${PWD}/docker/docker-compose-dopmam-network.yaml" up -d 2>&1 
 log "Creating Channel Artifacts (dopmam-shifa)"
 configtxgen -profile DopmamShifaChannel -outputCreateChannelTx "${PWD}/channel-artifacts/dopmam-shifa.tx" -channelID dopmam-shifa 2>&1 > /dev/null
 
+log "Creating Channel Artifacts (dopmam-naser)"
+configtxgen -profile DopmamNaserChannel -outputCreateChannelTx "${PWD}/channel-artifacts/dopmam-naser.tx" -channelID dopmam-naser 2>&1 > /dev/null
+
 log "Creating Channel Block (dopmam-shifa)"
 export CORE_PEER_TLS_ENABLED=true
 export ORDERER_CA=${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem
@@ -127,12 +130,33 @@ while [ $rc -ne 0 -a $RETRY_COUNT -lt 10 ] ; do
   RETRY_COUNT=$(expr $RETRY_COUNT + 1)
 done
 
+log "Creating Channel Block (dopmam-naser)"
+RETRY_COUNT=0
+rc=1
+while [ $rc -ne 0 -a $RETRY_COUNT -lt 10 ] ; do
+  sleep 1
+  peer channel create -o localhost:7050 -c dopmam-naser --ordererTLSHostnameOverride orderer.moh.ps -f "${PWD}/channel-artifacts/dopmam-naser.tx" --outputBlock "${PWD}/channel-artifacts/dopmam-naser.block" --tls --cafile "${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem" 2>&1 > /dev/null
+  rc=$?
+  RETRY_COUNT=$(expr $RETRY_COUNT + 1)
+done
+
+
 log "Joining dopmam-shifa Channel from peer0.dopmam.moh.ps"
 RETRY_COUNT=0
 rc=1
 while [ $rc -ne 0 -a $RETRY_COUNT -lt 10 ] ; do
   sleep 1
   peer channel join -b "${PWD}/channel-artifacts/dopmam-shifa.block" 2>&1 > /dev/null
+  rc=$?
+  RETRY_COUNT=$(expr $RETRY_COUNT + 1)
+done
+
+log "Joining dopmam-naser Channel from peer0.dopmam.moh.ps"
+RETRY_COUNT=0
+rc=1
+while [ $rc -ne 0 -a $RETRY_COUNT -lt 10 ] ; do
+  sleep 1
+  peer channel join -b "${PWD}/channel-artifacts/dopmam-naser.block" 2>&1 > /dev/null
   rc=$?
   RETRY_COUNT=$(expr $RETRY_COUNT + 1)
 done
@@ -151,6 +175,24 @@ rc=1
 while [ $rc -ne 0 -a $RETRY_COUNT -lt 10 ] ; do
   sleep 1
   peer channel join -b "${PWD}/channel-artifacts/dopmam-shifa.block" 2>&1 > /dev/null
+  rc=$?
+  RETRY_COUNT=$(expr $RETRY_COUNT + 1)
+done
+
+log "Joining dopmam-naser Channel from peer0.naser.moh.ps"
+export CORE_PEER_TLS_ENABLED=true
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem
+export CORE_PEER_LOCALMSPID="NaserMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/naser.moh.ps/peers/peer0.naser.moh.ps/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/naser.moh.ps/users/Admin@naser.moh.ps/msp
+export CORE_PEER_ADDRESS=localhost:12051
+export FABRIC_CFG_PATH=${PWD}/config
+
+RETRY_COUNT=0
+rc=1
+while [ $rc -ne 0 -a $RETRY_COUNT -lt 10 ] ; do
+  sleep 1
+  peer channel join -b "${PWD}/channel-artifacts/dopmam-naser.block" 2>&1 > /dev/null
   rc=$?
   RETRY_COUNT=$(expr $RETRY_COUNT + 1)
 done
