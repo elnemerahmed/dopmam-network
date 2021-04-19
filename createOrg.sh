@@ -18,6 +18,7 @@ source .env
 
 export org_name_with_domain=${org_name}.${DOMAIN}
 export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/${org_name_with_domain}
+export FABRIC_CA_CLIENT_TLS_CERTFILES=${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem
 
 # Crete directory structure
 mkdir -p "${PWD}/organizations/fabric-ca/${org_name}"
@@ -40,7 +41,7 @@ while : ; do
   fi
 done
 
-fabric-ca-client enroll -u https://admin:adminpw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client enroll -u https://admin:adminpw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} 2>&1 > /dev/null
 
 echo "NodeOUs:
   Enable: true
@@ -57,17 +58,17 @@ echo "NodeOUs:
     Certificate: cacerts/${org_ca_address}-${org_ca_port}-${org_ca_name}.pem
     OrganizationalUnitIdentifier: orderer" > "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/msp/config.yaml"
 
-fabric-ca-client register --caname ${org_ca_name} --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client register --caname ${org_ca_name} --id.name peer0 --id.secret peer0pw --id.type peer 2>&1 > /dev/null
 
-fabric-ca-client register --caname ${org_ca_name} --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client register --caname ${org_ca_name} --id.name user1 --id.secret user1pw --id.type client 2>&1 > /dev/null
 
-fabric-ca-client register --caname ${org_ca_name} --id.name ${org_name}admin --id.secret ${org_name}adminpw --id.type admin --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client register --caname ${org_ca_name} --id.name ${org_name}admin --id.secret ${org_name}adminpw --id.type admin 2>&1 > /dev/null
 
-fabric-ca-client enroll -u https://peer0:peer0pw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/peers/peer0.${org_name_with_domain}/msp" --csr.hosts peer0.${org_name_with_domain} --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client enroll -u https://peer0:peer0pw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/peers/peer0.${org_name_with_domain}/msp" --csr.hosts peer0.${org_name_with_domain} 2>&1 > /dev/null
 
 cp "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/msp/config.yaml" "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/peers/peer0.${org_name_with_domain}/msp/config.yaml" 2>&1 > /dev/null
 
-fabric-ca-client enroll -u https://peer0:peer0pw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/peers/peer0.${org_name_with_domain}/tls" --enrollment.profile tls --csr.hosts peer0.${org_name_with_domain} --csr.hosts ${org_ca_address} --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client enroll -u https://peer0:peer0pw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/peers/peer0.${org_name_with_domain}/tls" --enrollment.profile tls --csr.hosts peer0.${org_name_with_domain} --csr.hosts ${org_ca_address} 2>&1 > /dev/null
 
 cp "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/peers/peer0.${org_name_with_domain}/tls/tlscacerts"/* "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/peers/peer0.${org_name_with_domain}/tls/ca.crt"
 cp "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/peers/peer0.${org_name_with_domain}/tls/signcerts"/* "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/peers/peer0.${org_name_with_domain}/tls/server.crt"
@@ -76,10 +77,10 @@ cp "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/peers/peer0.$
 cp "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/peers/peer0.${org_name_with_domain}/tls/tlscacerts"/* "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/tlsca/tlsca.${org_name_with_domain}-cert.pem"
 cp "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/peers/peer0.${org_name_with_domain}/msp/cacerts"/* "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/ca/ca.${org_name_with_domain}-cert.pem"
 
-fabric-ca-client enroll -u https://user1:user1pw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/users/User1@${org_name_with_domain}/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client enroll -u https://user1:user1pw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/users/User1@${org_name_with_domain}/msp" 2>&1 > /dev/null
 
 cp "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/msp/config.yaml" "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/users/User1@${org_name_with_domain}/msp/config.yaml" 2>&1 > /dev/null
 
-fabric-ca-client enroll -u https://${org_name}admin:${org_name}adminpw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/users/Admin@${org_name_with_domain}/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/${org_name}/tls-cert.pem" 2>&1 > /dev/null
+fabric-ca-client enroll -u https://${org_name}admin:${org_name}adminpw@${org_ca_address}:${org_ca_port} --caname ${org_ca_name} -M "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/users/Admin@${org_name_with_domain}/msp" 2>&1 > /dev/null
 
 cp "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/msp/config.yaml" "${PWD}/organizations/peerOrganizations/${org_name_with_domain}/users/Admin@${org_name_with_domain}/msp/config.yaml" 2>&1 > /dev/null
