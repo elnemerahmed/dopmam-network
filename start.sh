@@ -22,11 +22,65 @@ docker-compose -f "${PWD}/docker/docker-compose-ca.yaml" -f "${PWD}/docker/docke
 log "Removing previous generated artifacts"
 rm -fr "${PWD}/channel-artifacts" 2>&1 > /dev/null
 rm -fr "${PWD}/organizations" 2>&1 > /dev/null
+rm -fr "${PWD}/ccp" 2>&1 > /dev/null
 rm -fr "${PWD}/system-genesis-block" 2>&1 > /dev/null
+
+echo '
+{
+    "name": "dopmam-network-${ORG_S}",
+    "version": "1.0.0",
+    "client": {
+        "organization": "${ORG_C}",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                }
+            }
+        }
+    },
+    "organizations": {
+        "${ORG_C}": {
+            "mspid": "${ORG_C}MSP",
+            "peers": [
+                "peer0.${ORG_S}.moh.ps"
+            ],
+            "certificateAuthorities": [
+                "ca.${ORG_S}.moh.ps"
+            ]
+        }
+    },
+    "peers": {
+        "peer0.${ORG_S}.moh.ps": {
+            "url": "grpcs://localhost:${P0PORT}",
+            "tlsCACerts": {
+                "pem": "${PEERPEM}"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.${ORG_S}.moh.ps",
+                "hostnameOverride": "peer0.${ORG_S}.moh.ps"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.${ORG_S}.moh.ps": {
+            "url": "https://localhost:${CAPORT}",
+            "caName": "ca-${ORG_S}",
+            "tlsCACerts": {
+                "pem": ["${CAPEM}"]
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}
+' >> ${PWD}/ccp/ccp-template.json
 
 log "Creating directory structure"
 mkdir -p "${PWD}/channel-artifacts" 2>&1 > /dev/null
 mkdir -p "${PWD}/organizations" 2>&1 > /dev/null
+mkdir -p "${PWD}/ccp" 2>&1 > /dev/null
 mkdir -p "${PWD}/system-genesis-block" 2>&1 > /dev/null
 
 log "Installing and starting Docker Certificate Authority containers"
@@ -37,6 +91,9 @@ log "Creating DOPMAM Organization"
 
 log "Creating Shifa Organization"
 ./createOrg.sh shifa localhost 8054 ca-shifa 2>&1 > /dev/null
+
+log "Creating Naser Organization"
+./createOrg.sh naser localhost 12054 ca-naser 2>&1 > /dev/null
 
 log "Creating Orderer Organization"
 ./createOrderer.sh orderer localhost 9054 ca-orderer 2>&1 > /dev/null
@@ -100,3 +157,6 @@ done
 
 # return the config export to configtx
 export FABRIC_CFG_PATH=${PWD}/configtx
+
+log "Generating connection profiles for peers"
+./ccp-generate.sh

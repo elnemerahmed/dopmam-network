@@ -4,6 +4,7 @@ volumes:
   orderer.moh.ps:
   peer0.dopmam.moh.ps:
   peer0.shifa.moh.ps:
+  peer0.naser.moh.ps:
 
 networks:
   dopmam:
@@ -105,6 +106,37 @@ services:
     networks:
       - dopmam
 
+  peer0.naser.moh.ps:
+    container_name: peer0.naser.moh.ps
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_test
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.naser.moh.ps
+      - CORE_PEER_ADDRESS=peer0.naser.moh.ps:12051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:12051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.naser.moh.ps:12052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:12052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.naser.moh.ps:12051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.naser.moh.ps:12051
+      - CORE_PEER_LOCALMSPID=NaserMSP
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../organizations/peerOrganizations/naser.moh.ps/peers/peer0.naser.moh.ps/msp:/etc/hyperledger/fabric/msp
+      - ../organizations/peerOrganizations/naser.moh.ps/peers/peer0.naser.moh.ps/tls:/etc/hyperledger/fabric/tls
+      - peer0.naser.moh.ps:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 12051:12051
+    networks:
+      - dopmam
   cli:
     container_name: cli
     image: hyperledger/fabric-tools:$IMAGE_TAG
