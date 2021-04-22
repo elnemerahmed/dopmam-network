@@ -61,13 +61,7 @@ log "Creating Channel Artifacts (dopmam-naser)"
 configtxgen -profile DopmamNaserChannel -outputCreateChannelTx "${PWD}/channel-artifacts/dopmam-naser.tx" -channelID dopmam-naser 2>&1 > /dev/null
 
 log "Creating Channel Block (dopmam-shifa)"
-export CORE_PEER_TLS_ENABLED=true
-export ORDERER_CA=${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem
-export CORE_PEER_LOCALMSPID="DopmamMSP"
-export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/dopmam.moh.ps/peers/peer0.dopmam.moh.ps/tls/ca.crt
-export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/dopmam.moh.ps/users/Admin@dopmam.moh.ps/msp
-export CORE_PEER_ADDRESS=localhost:7051
-export FABRIC_CFG_PATH=${PWD}/config
+setEnv dopmam
 
 RETRY_COUNT=0
 rc=1
@@ -110,13 +104,7 @@ while [ $rc -ne 0 -a $RETRY_COUNT -lt 10 ] ; do
 done
 
 log "Joining dopmam-shifa Channel from peer0.shifa.moh.ps"
-export CORE_PEER_TLS_ENABLED=true
-export ORDERER_CA=${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem
-export CORE_PEER_LOCALMSPID="ShifaMSP"
-export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/shifa.moh.ps/peers/peer0.shifa.moh.ps/tls/ca.crt
-export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/shifa.moh.ps/users/Admin@shifa.moh.ps/msp
-export CORE_PEER_ADDRESS=localhost:9051
-export FABRIC_CFG_PATH=${PWD}/config
+setEnv shifa
 
 RETRY_COUNT=0
 rc=1
@@ -128,13 +116,7 @@ while [ $rc -ne 0 -a $RETRY_COUNT -lt 10 ] ; do
 done
 
 log "Joining dopmam-naser Channel from peer0.naser.moh.ps"
-export CORE_PEER_TLS_ENABLED=true
-export ORDERER_CA=${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem
-export CORE_PEER_LOCALMSPID="NaserMSP"
-export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/naser.moh.ps/peers/peer0.naser.moh.ps/tls/ca.crt
-export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/naser.moh.ps/users/Admin@naser.moh.ps/msp
-export CORE_PEER_ADDRESS=localhost:12051
-export FABRIC_CFG_PATH=${PWD}/config
+setEnv naser
 
 RETRY_COUNT=0
 rc=1
