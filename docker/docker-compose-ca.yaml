@@ -1,6 +1,6 @@
 version: "2"
 networks:
-  dopmam:
+  network:
 
 services:
   ca_dopmam:
@@ -17,7 +17,7 @@ services:
       - ../organizations/fabric-ca/dopmam:/etc/hyperledger/fabric-ca-server
     container_name: ca_dopmam
     networks:
-      - dopmam
+      - network
 
   ca_shifa:
     image: hyperledger/fabric-ca:$IMAGE_TAG
@@ -33,7 +33,7 @@ services:
       - ../organizations/fabric-ca/shifa:/etc/hyperledger/fabric-ca-server
     container_name: ca_shifa
     networks:
-      - dopmam
+      - network
 
   ca_naser:
     image: hyperledger/fabric-ca:$IMAGE_TAG
@@ -49,7 +49,7 @@ services:
       - ../organizations/fabric-ca/naser:/etc/hyperledger/fabric-ca-server
     container_name: ca_naser
     networks:
-      - dopmam
+      - network
 
   ca_orderer:
     image: hyperledger/fabric-ca:$IMAGE_TAG
@@ -65,4 +65,4 @@ services:
       - ../organizations/fabric-ca/orderer:/etc/hyperledger/fabric-ca-server
     container_name: ca_orderer
     networks:
-      - dopmam
+      - network
