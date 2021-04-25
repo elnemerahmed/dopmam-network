@@ -16,7 +16,7 @@ services:
     environment:
       - FABRIC_LOGGING_SPEC=INFO
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=7050
+      - ORDERER_GENERAL_LISTENPORT=10050
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
@@ -38,7 +38,7 @@ services:
       - ../organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/tls/:/var/hyperledger/orderer/tls
       - orderer.moh.ps:/var/hyperledger/production/orderer
     ports:
-      - 7050:7050
+      - 10050:10050
     networks:
       - dopmam
 
@@ -87,12 +87,12 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       - CORE_PEER_ID=peer0.shifa.moh.ps
-      - CORE_PEER_ADDRESS=peer0.shifa.moh.ps:9051
-      - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.shifa.moh.ps:9052
-      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.shifa.moh.ps:9051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.shifa.moh.ps:9051
+      - CORE_PEER_ADDRESS=peer0.shifa.moh.ps:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.shifa.moh.ps:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.shifa.moh.ps:8051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.shifa.moh.ps:8051
       - CORE_PEER_LOCALMSPID=ShifaMSP
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
@@ -102,7 +102,7 @@ services:
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
     ports:
-      - 9051:9051
+      - 8051:8051
     networks:
       - dopmam
 
@@ -119,12 +119,12 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       - CORE_PEER_ID=peer0.naser.moh.ps
-      - CORE_PEER_ADDRESS=peer0.naser.moh.ps:12051
-      - CORE_PEER_LISTENADDRESS=0.0.0.0:12051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.naser.moh.ps:12052
-      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:12052
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.naser.moh.ps:12051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.naser.moh.ps:12051
+      - CORE_PEER_ADDRESS=peer0.naser.moh.ps:9051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.naser.moh.ps:9052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.naser.moh.ps:9051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.naser.moh.ps:9051
       - CORE_PEER_LOCALMSPID=NaserMSP
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
@@ -134,7 +134,7 @@ services:
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
     ports:
-      - 12051:12051
+      - 9051:9051
     networks:
       - dopmam
   cli:

@@ -41,10 +41,10 @@ log "Creating Shifa Organization"
 ./createOrg.sh shifa localhost 8054 ca-shifa 2>&1 > /dev/null
 
 log "Creating Naser Organization"
-./createOrg.sh naser localhost 12054 ca-naser 2>&1 > /dev/null
+./createOrg.sh naser localhost 9054 ca-naser 2>&1 > /dev/null
 
 log "Creating Orderer Organization"
-./createOrderer.sh orderer localhost 9054 ca-orderer 2>&1 > /dev/null
+./createOrderer.sh orderer localhost 10054 ca-orderer 2>&1 > /dev/null
 
 export FABRIC_CFG_PATH=${PWD}/configtx
 
@@ -67,7 +67,7 @@ RETRY_COUNT=0
 rc=1
 while [ $rc -ne 0 -a $RETRY_COUNT -lt 10 ] ; do
   sleep 1
-  peer channel create -o localhost:7050 -c dopmam-shifa --ordererTLSHostnameOverride orderer.moh.ps -f "${PWD}/channel-artifacts/dopmam-shifa.tx" --outputBlock "${PWD}/channel-artifacts/dopmam-shifa.block" --tls --cafile "${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem" 2>&1 > /dev/null
+  peer channel create -o localhost:10050 -c dopmam-shifa --ordererTLSHostnameOverride orderer.moh.ps -f "${PWD}/channel-artifacts/dopmam-shifa.tx" --outputBlock "${PWD}/channel-artifacts/dopmam-shifa.block" --tls --cafile "${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem" 2>&1 > /dev/null
   rc=$?
   RETRY_COUNT=$(expr $RETRY_COUNT + 1)
 done
@@ -77,7 +77,7 @@ RETRY_COUNT=0
 rc=1
 while [ $rc -ne 0 -a $RETRY_COUNT -lt 10 ] ; do
   sleep 1
-  peer channel create -o localhost:7050 -c dopmam-naser --ordererTLSHostnameOverride orderer.moh.ps -f "${PWD}/channel-artifacts/dopmam-naser.tx" --outputBlock "${PWD}/channel-artifacts/dopmam-naser.block" --tls --cafile "${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem" 2>&1 > /dev/null
+  peer channel create -o localhost:10050 -c dopmam-naser --ordererTLSHostnameOverride orderer.moh.ps -f "${PWD}/channel-artifacts/dopmam-naser.tx" --outputBlock "${PWD}/channel-artifacts/dopmam-naser.block" --tls --cafile "${PWD}/organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/msp/tlscacerts/tlsca.moh.ps-cert.pem" 2>&1 > /dev/null
   rc=$?
   RETRY_COUNT=$(expr $RETRY_COUNT + 1)
 done

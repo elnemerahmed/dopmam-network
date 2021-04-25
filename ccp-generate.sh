@@ -28,5 +28,5 @@ function org_ccp {
 }
 
 org_ccp dopmam Dopmam 7051 7054
-org_ccp shifa Shifa 9051 8054
-org_ccp naser Naser 12051 12054
+org_ccp shifa Shifa 8051 8054
+org_ccp naser Naser 9051 9054

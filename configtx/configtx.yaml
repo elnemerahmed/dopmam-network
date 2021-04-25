@@ -14,7 +14,7 @@ Organizations:
         Type: Signature
         Rule: "OR('OrdererMSP.admin')"
     OrdererEndpoints:
-      - orderer.moh.ps:7050
+      - orderer.moh.ps:10050
 
   - &Dopmam
     Name: DopmamMSP
@@ -102,11 +102,11 @@ Application: &ApplicationDefaults
 Orderer: &OrdererDefaults
   OrdererType: etcdraft
   Addresses:
-    - orderer.moh.ps:7050
+    - orderer.moh.ps:10050
   EtcdRaft:
     Consenters:
       - Host: orderer.moh.ps
-        Port: 7050
+        Port: 10050
         ClientTLSCert: ../organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/tls/server.crt
         ServerTLSCert: ../organizations/ordererOrganizations/moh.ps/orderers/orderer.moh.ps/tls/server.crt
   BatchTimeout: 2s
