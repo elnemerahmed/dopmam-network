@@ -14,6 +14,7 @@ services:
       - "7054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
+      - ../ca-config/dopmam.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
       - ../organizations/fabric-ca/dopmam:/etc/hyperledger/fabric-ca-server
     container_name: ca_dopmam
     networks:
@@ -30,6 +31,7 @@ services:
       - "8054:8054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
+      - ../ca-config/shifa.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
       - ../organizations/fabric-ca/shifa:/etc/hyperledger/fabric-ca-server
     container_name: ca_shifa
     networks:
@@ -46,6 +48,7 @@ services:
       - "9054:9054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
+      - ../ca-config/naser.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
       - ../organizations/fabric-ca/naser:/etc/hyperledger/fabric-ca-server
     container_name: ca_naser
     networks:
@@ -62,6 +65,7 @@ services:
       - "10054:10054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
+      - ../ca-config/orderer.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
       - ../organizations/fabric-ca/orderer:/etc/hyperledger/fabric-ca-server
     container_name: ca_orderer
     networks:
