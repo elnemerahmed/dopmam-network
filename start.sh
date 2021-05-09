@@ -21,7 +21,6 @@ docker-compose -f "${PWD}/docker/docker-compose-ca.yaml" -f "${PWD}/docker/docke
 
 log "Removing previous generated artifacts"
 rm -fr "${PWD}/channel-artifacts" 2>&1 > /dev/null
-rm -fr "${PWD}/organizations" 2>&1 > /dev/null
 rm -fr "${PWD}/ccp" 2>&1 > /dev/null
 rm -fr "${PWD}/system-genesis-block" 2>&1 > /dev/null
 
@@ -131,4 +130,4 @@ done
 export FABRIC_CFG_PATH=${PWD}/configtx
 
 log "Generating connection profiles for peers"
-sudo ./ccp-generate.sh
+./ccp-generate.sh

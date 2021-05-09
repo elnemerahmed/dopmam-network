@@ -7,6 +7,5 @@ docker-compose -f "${PWD}/docker/docker-compose-ca.yaml" -f "${PWD}/docker/docke
 
 # Remove previous generated artifacts
 rm -fr "${PWD}/channel-artifacts" 2>&1 > /dev/null
-rm -fr "${PWD}/organizations" 2>&1 > /dev/null
 rm -fr "${PWD}/ccp" 2>&1 > /dev/null
 rm -fr "${PWD}/system-genesis-block" 2>&1 > /dev/null
