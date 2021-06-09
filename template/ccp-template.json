@@ -1,8 +1,8 @@
 {
-    "name": "dopmam-network-${ORG_S}",
+    "name": "dopmam-network-${org_name_lowercase}",
     "version": "1.0.0",
     "client": {
-        "organization": "${ORG_C}",
+        "organization": "${org_name_uppercase}",
         "connection": {
             "timeout": {
                 "peer": {
@@ -12,34 +12,34 @@
         }
     },
     "organizations": {
-        "${ORG_C}": {
-            "mspid": "${ORG_C}MSP",
+        "${org_name_uppercase}": {
+            "mspid": "${org_msp}",
             "peers": [
-                "peer0.${ORG_S}.moh.ps"
+                "peer0.${org_name_lowercase}.${org_domain}"
             ],
             "certificateAuthorities": [
-                "ca.${ORG_S}.moh.ps"
+                "ca.${org_name_lowercase}.${org_domain}"
             ]
         }
     },
     "peers": {
-        "peer0.${ORG_S}.moh.ps": {
-            "url": "grpcs://localhost:${P0PORT}",
+        "peer0.${org_name_lowercase}.${org_domain}": {
+            "url": "grpcs://localhost:${org_port}",
             "tlsCACerts": {
-                "pem": "${PEERPEM}"
+                "pem": "${org_pem}"
             },
             "grpcOptions": {
-                "ssl-target-name-override": "peer0.${ORG_S}.moh.ps",
-                "hostnameOverride": "peer0.${ORG_S}.moh.ps"
+                "ssl-target-name-override": "peer0.${org_name_lowercase}.${org_domain}",
+                "hostnameOverride": "peer0.${org_name_lowercase}.${org_domain}"
             }
         }
     },
     "certificateAuthorities": {
-        "ca.${ORG_S}.moh.ps": {
-            "url": "https://localhost:${CAPORT}",
-            "caName": "ca-${ORG_S}",
+        "ca.${org_name_lowercase}.${org_domain}": {
+            "url": "https://localhost:${org_ca_port}",
+            "caName": "ca-${org_name_lowercase}",
             "tlsCACerts": {
-                "pem": ["${CAPEM}"]
+                "pem": ["${org_ca_pem}"]
             },
             "httpOptions": {
                 "verify": false
