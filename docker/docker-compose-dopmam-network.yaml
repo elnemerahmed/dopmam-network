@@ -42,17 +42,6 @@ services:
         networks:
             - network
 
-    couchdb_dopmam:
-        container_name: couchdb_dopmam
-        image: couchdb:3.1.1
-        environment:
-            - COUCHDB_USER=admin
-            - COUCHDB_PASSWORD=adminpw
-        ports:
-            - "7984:5984"
-        networks:
-            - network
-
     peer0.dopmam.moh.ps:
         container_name: peer0.dopmam.moh.ps
         image: hyperledger/fabric-peer:$IMAGE_TAG
@@ -73,10 +62,6 @@ services:
             - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.dopmam.moh.ps:7051
             - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.dopmam.moh.ps:7051
             - CORE_PEER_LOCALMSPID=DopmamMSP
-            - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-            - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb_dopmam:5984
-            - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
-            - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
         volumes:
             - /var/run/docker.sock:/host/var/run/docker.sock
             - ../organizations/peerOrganizations/dopmam.moh.ps/peers/peer0.dopmam.moh.ps/msp:/etc/hyperledger/fabric/msp
@@ -84,24 +69,11 @@ services:
             - peer0.dopmam.moh.ps:/var/hyperledger/production
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
         command: peer node start
-        depends_on:
-            - couchdb_dopmam
         ports:
             - 7051:7051
         networks:
             - network
 
-    couchdb_shifa:
-        container_name: couchdb_shifa
-        image: couchdb:3.1.1
-        environment:
-            - COUCHDB_USER=admin
-            - COUCHDB_PASSWORD=adminpw
-        ports:
-            - "8984:5984"
-        networks:
-            - network
-        
     peer0.shifa.moh.ps:
         container_name: peer0.shifa.moh.ps
         image: hyperledger/fabric-peer:$IMAGE_TAG
@@ -122,10 +94,6 @@ services:
             - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.shifa.moh.ps:8051
             - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.shifa.moh.ps:8051
             - CORE_PEER_LOCALMSPID=ShifaMSP
-            - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-            - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb_shifa:5984
-            - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
-            - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
         volumes:
             - /var/run/docker.sock:/host/var/run/docker.sock
             - ../organizations/peerOrganizations/shifa.moh.ps/peers/peer0.shifa.moh.ps/msp:/etc/hyperledger/fabric/msp
@@ -133,21 +101,8 @@ services:
             - peer0.shifa.moh.ps:/var/hyperledger/production
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
         command: peer node start
-        depends_on:
-            - couchdb_shifa
         ports:
             - 8051:8051
-        networks:
-            - network
-
-    couchdb_naser:
-        container_name: couchdb_naser
-        image: couchdb:3.1.1
-        environment:
-            - COUCHDB_USER=admin
-            - COUCHDB_PASSWORD=adminpw
-        ports:
-            - "9984:5984"
         networks:
             - network
     
@@ -171,10 +126,6 @@ services:
             - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.naser.moh.ps:9051
             - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.naser.moh.ps:9051
             - CORE_PEER_LOCALMSPID=NaserMSP
-            - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-            - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb_naser:5984
-            - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
-            - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
         volumes:
             - /var/run/docker.sock:/host/var/run/docker.sock
             - ../organizations/peerOrganizations/naser.moh.ps/peers/peer0.naser.moh.ps/msp:/etc/hyperledger/fabric/msp
@@ -182,8 +133,6 @@ services:
             - peer0.naser.moh.ps:/var/hyperledger/production
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
         command: peer node start
-        depends_on:
-            - couchdb_naser
         ports:
             - 9051:9051
         networks:
