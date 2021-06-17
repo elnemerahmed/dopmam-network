@@ -38,26 +38,26 @@
 ## Getting Started
 
 ### Prerequisites
-* Hyperledger Fabric Bin
+* Hyperledger Fabric Binaries
 * docker
 * docker-compose
-* Node js
 * jq
 
 ### Installation
 
-1. Clone this repository ```https://github.com/elnemerahmed/dopmam-network```
-2. Enter the cloned folder
-3. Update ```.env``` file with the correct values
+1. Open a new terminal
+2. Clone the repository using ```git clone https://github.com/elnemerahmed/dopmam-network```
 
 ## Usage
 After successfully installing the requirments and cloning the repository, do the following.
-1. open new termenal.
-2. ```chmod +x *.sh```
-3. ```./ca.sh```
-4. ```./channel.sh```
-5. ```./ccp.sh```
-6. ```./anchor.sh```
+1. Open a new termenal.
+2. Make scripts executalbes if needed using ```chmod u+x *.sh```
+3. Make ```.env``` file executalbes also if needed using  ```chmod u+x .env```
+4. Clean any previous run files using ```./clean.sh```
+6. Start Certificate Authorites dockers using ```./ca.sh```
+7. Start channel peers dockers using  ```./channel.sh```
+8. Update anchor peers configurations using ```./anchor.sh```
+9. Generate connection profiles using ```./ccp.sh```
 
 ## Roadmap
 
@@ -79,7 +79,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-1. Ahmed El Nemer - ahmedelnemer02@gmail.com
-2. Waleed Mortaja - waleedmortaja@protonmail.com
+- Ahmed El Nemer - ahmedelnemer02@gmail.com
+- Waleed Mortaja - waleedmortaja@protonmail.com
 
 Project Link: [https://github.com/elnemerahmed/dopmam-network](https://github.com/elnemerahmed/dopmam-network)
