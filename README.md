@@ -76,7 +76,7 @@ Contributions are what make the open source community such an amazing place to b
 
 ## License
 
-Distributed under the GPL License. See `LICENSE` for more information.
+Distributed under the GPL License. See [LICENSE](LICENSE) for more information.
 
 ## Contact
 
