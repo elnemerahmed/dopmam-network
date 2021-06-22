@@ -49,3 +49,4 @@ updateAnchorPeerForOrganization() {
 
 updateAnchorPeerForOrganization dopmam moh.ps DopmamMSP 7051 localhost 10050 orderer moh.ps dopmam-shifa
 updateAnchorPeerForOrganization shifa  moh.ps ShifaMSP  8051 localhost 10050 orderer moh.ps dopmam-shifa
+updateAnchorPeerForOrganization naser  moh.ps NaserMSP  9051 localhost 10050 orderer moh.ps dopmam-naser
