@@ -58,6 +58,7 @@ After successfully installing the requirments and cloning the repository, do the
 7. Start channel peers dockers using  ```./channel.sh```
 8. Update anchor peers configurations using ```./anchor.sh```
 9. Generate connection profiles using ```./ccp.sh```
+10. Deploy chaincode on organizations using ```./deploycc.sh```
 
 ## Roadmap
 
@@ -75,7 +76,7 @@ Contributions are what make the open source community such an amazing place to b
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the GPL License. See `LICENSE` for more information.
 
 ## Contact
 
