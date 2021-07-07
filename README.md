@@ -51,14 +51,12 @@
 ## Usage
 After successfully installing the requirments and cloning the repository, do the following.
 1. Open a new termenal.
-2. Make scripts executalbes if needed using ```chmod u+x *.sh```
-3. Make ```.env``` file executalbes also if needed using  ```chmod u+x .env```
-4. Clean any previous run files using ```./clean.sh```
-6. Start Certificate Authorites dockers using ```./ca.sh```
-7. Start channel peers dockers using  ```./channel.sh```
-8. Update anchor peers configurations using ```./anchor.sh```
-9. Generate connection profiles using ```./ccp.sh```
-10. Deploy chaincode on organizations using ```./deploycc.sh```
+2. Clean any previous run files using ```./clean.sh```
+3. Start Certificate Authorites dockers using ```./ca.sh```
+4. Start channel peers dockers using  ```./channel.sh```
+5. Update anchor peers configurations using ```./anchor.sh```
+6. Generate connection profiles using ```./ccp.sh```
+7. Deploy chaincode on organizations using ```./deploycc.sh```
 
 ## Roadmap
 
